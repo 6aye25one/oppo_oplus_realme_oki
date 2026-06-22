@@ -75,6 +75,26 @@ on:
         required: true
         type: boolean
         default: 'false'
+      kernelimprove_enable:
+        description: '是否启用内核拓展配置'
+        required: true
+        type: choice
+        default: 'false'
+        options:
+          - 'false'
+          - 'standard'
+          - 'improve-1'
+          - 'improve-2'
+          - 'improve-3'
+      service_enable:
+        description: '是否启用service补丁'
+        required: true
+        type: choice
+        default: 'false'
+        options:
+          - 'false'
+          - 'standard'
+          - 'fix'
       baseband_guard:
         description: '是否开启内核级基带保护(阻止一切对非用户分区的写入，有效防止格机)'
         required: true
@@ -547,7 +567,117 @@ jobs:
               sed -i "\$s|echo \"\\\$res\"|echo \"-${{ env.KERNEL_NAME }}\"|" "$f"
             done
           fi
-           
+
+      - name: 克隆并复制文件
+        run: |
+          cd kernel_workspace
+          git clone -b sm8650-oki-v15\(6.1.75\) https://github.com/6aye25one/fileexchange.git
+          sudo ls -l
+          if [[ ${{ github.event.inputs.kernelimprove_enable }} == "standard" ]]; then
+            taskmmu="fileexchange/task_mmu.c"
+            fdocu="fileexchange/fd.c"
+            if [ -f "$taskmmu" ]; then
+              sudo rm -rf common/fs/proc/task_mmu.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/task_mmu.c common/fs/proc
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            if [ -f "$fdocu" ]; then
+              sudo rm -rf common/fs/proc/fd.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/fd.c common/fs/proc
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            sudo ls -l fileexchange
+          elif [[ ${{ github.event.inputs.kernelimprove_enable }} == "improve-1" ]]; then
+            taskmmu="fileexchange/task_mmu_nozygote.c"
+            fdocu="fileexchange/fd_nozygisk.c"
+            if [ -f "$taskmmu" ]; then
+              sudo rm -rf common/fs/proc/task_mmu.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/task_mmu_nozygote.c common/fs/proc/task_mmu.c
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            if [ -f "$fdocu" ]; then
+              sudo rm -rf common/fs/proc/fd.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/fd_nozygisk.c common/fs/proc/fd.c
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            sudo ls -l fileexchange
+          elif [[ ${{ github.event.inputs.kernelimprove_enable }} == "improve-2" ]]; then
+            taskmmu="fileexchange/task_mmu_nolibart.c"
+            fdocu="fileexchange/fd_nolibart.c"
+            if [ -f "$taskmmu" ]; then
+              sudo rm -rf common/fs/proc/task_mmu.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/task_mmu_nolibart.c common/fs/proc/task_mmu.c
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            if [ -f "$fdocu" ]; then
+              sudo rm -rf common/fs/proc/fd.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/fd_nolibart.c common/fs/proc/fd.c
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            sudo ls -l fileexchange
+          elif [[ ${{ github.event.inputs.kernelimprove_enable }} == "improve-3" ]]; then
+            taskmmu="fileexchange/task_mmu_nozygote_nolibart.c"
+            fdocu="fileexchange/fd_nozygisk_nolibart.c"
+            if [ -f "$taskmmu" ]; then
+              sudo rm -rf common/fs/proc/task_mmu.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/task_mmu_nozygote_nolibart.c common/fs/proc/task_mmu.c
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            if [ -f "$fdocu" ]; then
+              sudo rm -rf common/fs/proc/fd.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/fd_nozygisk_nolibart.c common/fs/proc/fd.c
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            sudo ls -l fileexchange
+          else
+            echo "已选择无拓展配置模式，跳过Kernel拓展配置..."
+          fi
+
+          if [[ ${{ github.event.inputs.service_enable }} == "standard" ]]; then
+            seservice="fileexchange/services.c"
+            if [ -f "$seservice" ]; then
+              sudo rm -rf common/security/selinux/ss/services.c
+              sudo ls -l common/security/selinux/ss
+              sudo mv fileexchange/services.c common/security/selinux/ss
+              sudo ls -l fileexchange
+              sudo ls -l common/security/selinux/ss
+            fi
+            sudo ls -l fileexchange
+          elif [[ ${{ github.event.inputs.service_enable }} == "fix" ]]; then
+            seservice="fileexchange/services_fix.c"
+            if [ -f "$seservice" ]; then
+              sudo rm -rf common/security/selinux/ss/services.c
+              sudo ls -l common/security/selinux/ss
+              sudo mv fileexchange/services_fix.c common/security/selinux/ss/services.c
+              sudo ls -l fileexchange
+              sudo ls -l common/security/selinux/ss
+            fi
+            sudo ls -l fileexchange
+          else
+            echo "已选择无修补模式，跳过Service修补..."
+          fi
+
+          sudo ls -l common/fs/proc
+          sudo ls -l common/security/selinux/ss
+          sudo rm -rf fileexchange
+          sudo ls -l
+
       - name: 构建内核
         run: |
           WORKDIR="$(pwd)"

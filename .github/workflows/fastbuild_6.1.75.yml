@@ -88,6 +88,7 @@ on:
         options:
           - 'false'
           - 'standard'
+          - 'lite'
           - 'improve-1'
           - 'improve-2'
           - 'improve-3'
@@ -99,7 +100,9 @@ on:
         options:
           - 'false'
           - 'standard'
+          - 'lite'
           - 'fix'
+          - 'fixer'
       ccache_update:
         description: '更新ccache缓存(将本次编译生成的ccache缓存覆盖至仓库缓存，在更改编译配置、源码或需要刷新缓存时开启)'
         required: true
@@ -583,6 +586,16 @@ jobs:
               sudo ls -l common/fs/proc
             fi
             sudo ls -l fileexchange
+          elif [[ ${{ github.event.inputs.kernelimprove_enable }} == "lite" ]]; then
+            taskmmu="fileexchange/task_mmu_lite.c"
+            if [ -f "$taskmmu" ]; then
+              sudo rm -rf common/fs/proc/task_mmu.c
+              sudo ls -l common/fs/proc
+              sudo mv fileexchange/task_mmu_lite.c common/fs/proc/task_mmu.c
+              sudo ls -l fileexchange
+              sudo ls -l common/fs/proc
+            fi
+            sudo ls -l fileexchange
           elif [[ ${{ github.event.inputs.kernelimprove_enable }} == "improve-1" ]]; then
             taskmmu="fileexchange/task_mmu_nozygote.c"
             if [ -f "$taskmmu" ]; then
@@ -627,12 +640,32 @@ jobs:
               sudo ls -l common/security/selinux/ss
             fi
             sudo ls -l fileexchange
+          elif [[ ${{ github.event.inputs.service_enable }} == "lite" ]]; then
+            seservice="fileexchange/services_fixlite.c"
+            if [ -f "$seservice" ]; then
+              sudo rm -rf common/security/selinux/ss/services.c
+              sudo ls -l common/security/selinux/ss
+              sudo mv fileexchange/services_fixlite.c common/security/selinux/ss/services.c
+              sudo ls -l fileexchange
+              sudo ls -l common/security/selinux/ss
+            fi
+            sudo ls -l fileexchange
           elif [[ ${{ github.event.inputs.service_enable }} == "fix" ]]; then
             seservice="fileexchange/services_fix.c"
             if [ -f "$seservice" ]; then
               sudo rm -rf common/security/selinux/ss/services.c
               sudo ls -l common/security/selinux/ss
               sudo mv fileexchange/services_fix.c common/security/selinux/ss/services.c
+              sudo ls -l fileexchange
+              sudo ls -l common/security/selinux/ss
+            fi
+            sudo ls -l fileexchange
+          elif [[ ${{ github.event.inputs.service_enable }} == "fixer" ]]; then
+            seservice="fileexchange/services_fixer.c"
+            if [ -f "$seservice" ]; then
+              sudo rm -rf common/security/selinux/ss/services.c
+              sudo ls -l common/security/selinux/ss
+              sudo mv fileexchange/services_fixer.c common/security/selinux/ss/services.c
               sudo ls -l fileexchange
               sudo ls -l common/security/selinux/ss
             fi

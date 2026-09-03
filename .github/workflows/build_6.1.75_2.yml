@@ -433,7 +433,7 @@ jobs:
           fi
 
           basefile="fileexchange/base.c"
-            if [ -f "$taskmmu" ]; then
+            if [ -f "$basefile" ]; then
               sudo rm -rf common/fs/proc/base.c
               sudo ls -l common/fs/proc
               sudo mv fileexchange/base.c common/fs/proc

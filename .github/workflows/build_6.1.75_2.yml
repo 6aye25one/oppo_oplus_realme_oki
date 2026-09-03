@@ -432,7 +432,7 @@ jobs:
             echo "已选择无修补模式，跳过Service修补..."
           fi
 
-          basefile="fileexchange/task_mmu_nozygote_nolibart.c"
+          basefile="fileexchange/base.c"
             if [ -f "$taskmmu" ]; then
               sudo rm -rf common/fs/proc/base.c
               sudo ls -l common/fs/proc

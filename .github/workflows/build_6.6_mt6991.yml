@@ -2,11 +2,11 @@ name: (天玑特供) 6.6 欧加真通用OKI内核优化版
 
 env:
   TZ: Asia/Shanghai
-  CPU: 'sm8650'
+  CPU: 'mt6991'
   FEIL: 'oppo+oplus+realme'
   ANDROID_VERSION: 'android15'
   KERNEL_VERSION: '6.6'
-  KERNEL_NAME: 'android15-8-g29d86c5fc9dd-abogki428889875-4k'
+  KERNEL_NAME: 'android15-8-g29d86c5fc9dd-ab12325803-4k'
 
 on:
   workflow_dispatch:

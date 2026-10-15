@@ -6,7 +6,7 @@ env:
   FEIL: 'oppo+oplus+realme'
   ANDROID_VERSION: 'android15'
   KERNEL_VERSION: '6.6'
-  KERNEL_NAME: 'android15-8-g29d86c5fc9dd-ab12325803-4k'
+  KERNEL_NAME: 'android15-8-g03527e6209cb-ab12325803-4k'
 
 on:
   workflow_dispatch:

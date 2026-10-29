@@ -176,7 +176,7 @@ jobs:
           patch -p1 -F 3 < cve-2026-43499-rtmutex-6.6.patch
           # 应用 CVE_2024_43093 修复补丁
           cd common
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/other_patch/unicode-bypass_fix_5.10-6.12通用.patch
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/other_patch/unicode-bypass_fix_5.10-6.12.patch
           patch -p1 < unicode-bypass_fix_5.10-6.12通用.patch
 
       - name: 启用网络功能增强优化配置

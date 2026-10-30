@@ -354,6 +354,13 @@ jobs:
           sudo rm -rf common/kernel/locking/rtmutex_api.c
           sudo mv fileexchange/rtmutex.c common/kernel/locking
           sudo mv fileexchange/rtmutex_api.c common/kernel/locking
+          # 应用 CVE_2026_64560 修复补丁
+          sudo rm -rf common/kernel/exit.c
+          sudo rm -rf common/kernel/signal.c
+          sudo rm -rf common/kernel/time/posix-cpu-timers.c
+          sudo mv fileexchange/exit.c common/kernel
+          sudo mv fileexchange/signal.c common/kernel
+          sudo mv fileexchange/posix-cpu-timers.c common/kernel/time
           if [[ ${{ github.event.inputs.kernelimprove_enable }} == "standard" ]]; then
             taskmmu="fileexchange/task_mmu.c"
             if [ -f "$taskmmu" ]; then

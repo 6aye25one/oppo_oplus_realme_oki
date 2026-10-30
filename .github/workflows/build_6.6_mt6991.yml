@@ -170,10 +170,7 @@ jobs:
           echo "CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y" >> ./common/arch/arm64/configs/gki_defconfig
           #禁用 defconfig 检查
           sed -i 's/check_defconfig//' ./common/build.config.gki
-          # 应用 CVE_2026_43499 修复补丁
-          #cd common
-          #wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/other_patch/cve-2026-43499-rtmutex-6.6.patch
-          #patch -p1 -F 3 < cve-2026-43499-rtmutex-6.6.patch
+
           # 应用 CVE_2024_43093 修复补丁
           cd common
           wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/other_patch/unicode-bypass_fix_5.10-6.12.patch
@@ -352,6 +349,11 @@ jobs:
           cd kernel_workspace
           git clone -b mt6991-oki https://github.com/6aye25one/fileexchange.git
           sudo ls -l
+          # 应用 CVE_2026_43499 修复补丁
+          sudo rm -rf common/kernel/locking/rtmutex.c
+          sudo rm -rf kernel/locking/rtmutex_api.c
+          sudo mv fileexchange/rtmutex.c common/kernel/locking
+          sudo mv fileexchange/rtmutex_api.c common/kernel/locking
           if [[ ${{ github.event.inputs.kernelimprove_enable }} == "standard" ]]; then
             taskmmu="fileexchange/task_mmu.c"
             if [ -f "$taskmmu" ]; then

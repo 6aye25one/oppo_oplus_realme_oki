@@ -363,7 +363,7 @@ jobs:
           sudo mv fileexchange/posix-cpu-timers.c common/kernel/time
           # 应用 CVE_2026_46242 修复补丁；应用CVE_2026_98260修复补丁
           sudo rm -rf common/fs/eventpoll.c
-          sudo rm-rf /common/fs/exec.c
+          sudo rm -rf /common/fs/exec.c
           sudo mv fileexchange/eventpoll.c common/fs
           sudo mv fileexchange/exec.c common/fs
 

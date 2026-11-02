@@ -423,8 +423,13 @@ jobs:
             basefile="fileexchange/sys.c"
               if [ -f "$basefile" ]; then
                 sudo rm -rf common/kernel/sys.c
+                sudo rm -rf common/kernel/cred.c
+                sudo rm -rf common/block/ioprio.c
                 sudo ls -l common/kernel
+                sudo ls -l common/block
                 sudo mv fileexchange/sys.c common/kernel
+                sudo mv fileexchange/cred.c common/kernel
+                sudo mv fileexchange/ioprio.c common/block
                 sudo ls -l fileexchange
                 sudo ls -l common/kernel
               fi
